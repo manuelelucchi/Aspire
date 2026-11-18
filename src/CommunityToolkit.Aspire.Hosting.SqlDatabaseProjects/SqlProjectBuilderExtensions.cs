@@ -44,7 +44,8 @@ public static class SqlProjectBuilderExtensions
 
         var projectAnnotation = new TProject();
 
-        return builder.AddDacPacResource(name, new SqlProjectResource(name), [new(CustomResourceKnownProperties.Source, projectAnnotation.ProjectPath)])
+        var workingDirectory = Path.GetDirectoryName(Path.GetFullPath(projectAnnotation.ProjectPath, builder.AppHostDirectory))!;
+        return builder.AddDacPacResource(name, new SqlProjectResource(name, workingDirectory), [new(CustomResourceKnownProperties.Source, projectAnnotation.ProjectPath)])
             .WithAnnotation(projectAnnotation);
     }
 
@@ -88,7 +89,7 @@ public static class SqlProjectBuilderExtensions
 
         return builder.AddDacPacResource(
                 name,
-                new SqlProjectResource(name),
+                new SqlProjectResource(name, Path.GetDirectoryName(normalizedProjectPath)!),
                 [new(CustomResourceKnownProperties.Source, normalizedProjectPath)])
             .WithAnnotation(projectMetadata)
             .WithAnnotation(new SqlProjectBuildAnnotation(configuration));
@@ -176,7 +177,7 @@ public static class SqlProjectBuilderExtensions
         IDistributedApplicationBuilder builder,
         string name,
         ImmutableArray<ResourcePropertySnapshot> properties)
-        => builder.AddDacPacResource(name, new SqlProjectResource(name), properties);
+        => builder.AddDacPacResource(name, new SqlProjectResource(name, builder.AppHostDirectory), properties);
 
     private static void ValidateNuGetPackageId(string packageId)
     {

@@ -1,4 +1,5 @@
 using CommunityToolkit.Aspire.Hosting.SqlDatabaseProjects;
+using Aspire.Hosting.Dotnet;
 using Microsoft.Build.Evaluation;
 using Microsoft.SqlServer.Dac;
 using System.Reflection;
@@ -9,8 +10,9 @@ namespace Aspire.Hosting.ApplicationModel;
 /// Represents a SQL Server Database project resource.
 /// </summary>
 /// <param name="name">Name of the resource.</param>
+/// <param name="workingDirectory">Working directory associated with the SQL Server Database project.</param>
 [AspireExport(ExposeProperties = true)]
-public sealed class SqlProjectResource(string name) : Resource(name), IResourceWithWaitSupport, IResourceWithDacpac
+public sealed class SqlProjectResource(string name, string workingDirectory) : DotnetProjectResource(name, workingDirectory), IResourceWithDacpac
 {
     /// <summary>
     /// Gets the configured path to the .dacpac file.
